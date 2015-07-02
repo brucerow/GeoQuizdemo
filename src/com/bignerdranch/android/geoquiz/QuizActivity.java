@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,11 +15,13 @@ public class QuizActivity extends Activity {
 
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
+    
 
     Button mTrueButton;
     Button mFalseButton;
     Button mNextButton;
     Button mCheatButton;
+    Button mPervButton;
 
     boolean mIsCheater;
 
@@ -45,6 +48,7 @@ public class QuizActivity extends Activity {
         int messageResId = 0;
         
         if (mIsCheater) {
+        	//如果答案正确就警告，如果答案错误就表扬
             if (userPressedTrue == answerIsTrue) {
                 messageResId = R.string.judgment_toast;
             } else {
@@ -71,6 +75,16 @@ public class QuizActivity extends Activity {
         mIsCheater = false;
 
         mQuestionTextView = (TextView)findViewById(R.id.question_text_view);
+        mQuestionTextView.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// 点击文字获取下一题
+				mCurrentIndex = (mCurrentIndex + 1) % mAnswerKey.length;
+                mIsCheater = false;
+                updateQuestion();
+			}
+		});
 
         mTrueButton = (Button)findViewById(R.id.true_button);
         mTrueButton.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +101,24 @@ public class QuizActivity extends Activity {
                 checkAnswer(false);
             }
         });
-
+        
+        //上一题
+        mPervButton = (Button) findViewById(R.id.prev_button);
+        mPervButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(mCurrentIndex>0){
+					mCurrentIndex = mCurrentIndex-1 ;
+	                mIsCheater = false;
+	                updateQuestion();
+				}else{
+					Toast.makeText(QuizActivity.this,"已经到头来",Toast.LENGTH_SHORT).show();
+				}
+				
+			}
+		});
+        
         mNextButton = (Button)findViewById(R.id.next_button);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +138,7 @@ public class QuizActivity extends Activity {
                 Intent i = new Intent(QuizActivity.this, CheatActivity.class);
                 Log.d(TAG, "intent created");
                 boolean answerIsTrue = mAnswerKey[mCurrentIndex].isTrueQuestion();
-                i.putExtra(CheatActivity.EXTRA_ANSWER_IS_TRUE, answerIsTrue);
+                i.putExtra("ANSWER_IS_TRUE", answerIsTrue);
                 startActivityForResult(i, 0);
             }
         });
@@ -121,7 +152,7 @@ public class QuizActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
+        mIsCheater = data.getBooleanExtra("ANSWER_SHOWN", false);
     }
 
     @Override

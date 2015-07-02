@@ -17,13 +17,15 @@ public final class R {
     }
     public static final class id {
         public static final int answerTextView=0x7f070000;
-        public static final int cheat_button=0x7f070005;
-        public static final int false_button=0x7f070004;
-        public static final int menu_settings=0x7f070007;
-        public static final int next_button=0x7f070006;
-        public static final int question_text_view=0x7f070002;
+        public static final int cheat_button=0x7f070006;
+        public static final int false_button=0x7f070005;
+        public static final int menu_settings=0x7f070009;
+        public static final int next_button=0x7f070008;
+        public static final int prev_button=0x7f070007;
+        public static final int question_text_view=0x7f070003;
         public static final int showAnswerButton=0x7f070001;
-        public static final int true_button=0x7f070003;
+        public static final int true_button=0x7f070004;
+        public static final int version_textview=0x7f070002;
     }
     public static final class layout {
         public static final int activity_cheat=0x7f030000;
