@@ -34,6 +34,8 @@ public class QuizActivity extends Activity {
             new TrueFalse(R.string.question_americas, true),
             new TrueFalse(R.string.question_asia, true)
     };
+    
+    boolean mKnowAnswer [] = new boolean[mAnswerKey.length];
 
     int mCurrentIndex = 0;
 
@@ -46,7 +48,7 @@ public class QuizActivity extends Activity {
         boolean answerIsTrue = mAnswerKey[mCurrentIndex].isTrueQuestion();
 
         int messageResId = 0;
-        
+        mIsCheater =mKnowAnswer[mCurrentIndex];
         if (mIsCheater) {
         	//如果答案正确就警告，如果答案错误就表扬
             if (userPressedTrue == answerIsTrue) {
@@ -145,6 +147,7 @@ public class QuizActivity extends Activity {
 
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            mIsCheater = savedInstanceState.getBoolean("mIsCheater");
         }
 
         updateQuestion();
@@ -153,6 +156,8 @@ public class QuizActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         mIsCheater = data.getBooleanExtra("ANSWER_SHOWN", false);
+        //把对应题号存下来
+        mKnowAnswer [mCurrentIndex] =mIsCheater;
     }
 
     @Override
@@ -160,6 +165,7 @@ public class QuizActivity extends Activity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+        savedInstanceState.putBoolean("mIsCheater", mIsCheater);
     }
     
     @Override
